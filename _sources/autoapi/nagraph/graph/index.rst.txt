@@ -1,0 +1,939 @@
+nagraph.graph
+=============
+
+.. py:module:: nagraph.graph
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   nagraph.graph.GraphNode
+   nagraph.graph.Graph
+
+
+Module Contents
+---------------
+
+.. py:class:: GraphNode(node_id: str, graph: Graph, values: Optional[dict[str, Any]] = None)
+
+   .. py:attribute:: node_id
+      :type:  str
+
+
+   .. py:attribute:: graph
+      :type:  Graph
+
+
+   .. py:attribute:: values
+      :type:  Optional[dict[str, Any]]
+      :value: None
+
+
+
+.. py:class:: Graph(weighted: bool = False)
+
+   .. py:attribute:: nodes
+      :type:  dict[str, GraphNode]
+
+
+   .. py:attribute:: weighted
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: nodes_edges
+      :type:  dict[str, set[str] | dict[str, float]]
+
+
+   .. py:attribute:: nodes_edges_sym
+      :type:  dict[str, set[str]]
+
+
+   .. py:method:: generate_unique_node_id() -> str
+
+      Generate a unique node ID for the graph.
+
+      :returns: A unique node ID.
+      :rtype: str
+
+      :raises UserWarning: If the maximum iteration limit for generating a unique ID is reached.
+
+
+
+   .. py:method:: add_node(node_id: str = '', values: Optional[dict[str, Any]] = None) -> GraphNode
+
+      Add a new node to the graph.
+
+      :param node_id: The ID of the node. If empty, a unique ID is generated. Defaults to "".
+      :type node_id: str, optional
+      :param values: A dictionary of node attributes. Defaults to None.
+      :type values: Optional[dict[str, Any]], optional
+
+      :returns: The newly created node.
+      :rtype: GraphNode
+
+      :raises UserWarning: If a node with the given ID already exists.
+
+
+
+   .. py:method:: add_edge(src_node_id: str, dst_node_id: str, weight: float = 1, add_symetric: bool = False) -> None
+
+      Add an edge to the graph.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+      :param weight: The weight of the edge (used if graph is weighted). Defaults to 1.
+      :type weight: float, optional
+      :param add_symetric: If True, adds the reverse edge. Defaults to False.
+      :type add_symetric: bool, optional
+
+      :returns: None
+
+      :raises UserWarning: If either source or destination node does not exist.
+
+
+
+   .. py:method:: remove_edge(src_node_id: str, dst_node_id: str, remove_symetric: bool = False) -> None
+
+      Remove an edge from the graph.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+      :param remove_symetric: If True, removes the reverse edge. Defaults to False.
+      :type remove_symetric: bool, optional
+
+      :returns: None
+
+      :raises UserWarning: If either source or destination node does not exist, or if the edge does not exist.
+
+
+
+   .. py:method:: remove_all_edges_from_src_node(src_node_id: str) -> None
+
+      Remove all edges originating from a specific source node.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+
+      :returns: None
+
+      :raises UserWarning: If the source node does not exist.
+
+
+
+   .. py:method:: remove_all_edges_to_dst_node(dst_node_id: str) -> None
+
+      Remove all edges pointing to a specific destination node.
+
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+
+      :returns: None
+
+      :raises UserWarning: If the destination node does not exist.
+
+
+
+   .. py:method:: remove_node(node_id: str, remove_edges_with: bool = True) -> None
+
+      Remove a node from the graph.
+
+      :param node_id: The ID of the node to remove.
+      :type node_id: str
+      :param remove_edges_with: If True, removes all edges connected to the node. Defaults to True.
+      :type remove_edges_with: bool, optional
+
+      :returns: None
+
+      :raises UserWarning: If the node does not exist or if edges exist and remove_edges_with is False.
+
+
+
+   .. py:method:: get_node(node_id: str) -> GraphNode
+
+      Retrieve a node from the graph by its ID.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+
+      :returns: The node with the specified ID.
+      :rtype: GraphNode
+
+      :raises UserWarning: If the node does not exist.
+
+
+
+   .. py:method:: get_node_value(node_id: str, value_key: str) -> GraphNode
+
+      Get a specific value associated with a node.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+      :param value_key: The key of the value to retrieve.
+      :type value_key: str
+
+      :returns: The value associated with the key.
+      :rtype: Any
+
+      :raises UserWarning: If the node or value key does not exist.
+
+
+
+   .. py:method:: set_node_value(node_id: str, value_key: str, value: Any) -> None
+
+      Set a specific value for a node.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+      :param value_key: The key of the value to set.
+      :type value_key: str
+      :param value: The value to set.
+      :type value: Any
+
+      :returns: None
+
+      :raises UserWarning: If the node does not exist.
+
+
+
+   .. py:method:: del_node_value(node_id: str, value_key: str) -> GraphNode
+
+      Delete a specific value associated with a node.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+      :param value_key: The key of the value to delete.
+      :type value_key: str
+
+      :returns: None
+
+      :raises UserWarning: If the node or value key does not exist.
+
+
+
+   .. py:method:: get_predecessors_ids_of_node(node_id: str = '', node: Optional[GraphNode] = None) -> list[str]
+
+      Get the IDs of all predecessor nodes of a given node.
+
+      :param node_id: The ID of the node. Defaults to "".
+      :type node_id: str, optional
+      :param node: The node object. Defaults to None.
+      :type node: Optional[GraphNode], optional
+
+      :returns: A list of predecessor node IDs.
+      :rtype: list[str]
+
+      :raises UserWarning: If neither node_id nor node is provided, or if the node does not exist.
+
+
+
+   .. py:method:: get_successors_ids_of_node(node_id: str = '', node: Optional[GraphNode] = None) -> list[str]
+
+      Get the IDs of all successor nodes of a given node.
+
+      :param node_id: The ID of the node. Defaults to "".
+      :type node_id: str, optional
+      :param node: The node object. Defaults to None.
+      :type node: Optional[GraphNode], optional
+
+      :returns: A list of successor node IDs.
+      :rtype: list[str]
+
+      :raises UserWarning: If neither node_id nor node is provided, or if the node does not exist.
+
+
+
+   .. py:method:: get_predecessors_of_node(node_id: str = '', node: Optional[GraphNode] = None) -> list[GraphNode]
+
+      Get all predecessor nodes of a given node.
+
+      :param node_id: The ID of the node. Defaults to "".
+      :type node_id: str, optional
+      :param node: The node object. Defaults to None.
+      :type node: Optional[GraphNode], optional
+
+      :returns: A list of predecessor nodes.
+      :rtype: list[GraphNode]
+
+      :raises UserWarning: If neither node_id nor node is provided, or if the node does not exist.
+
+
+
+   .. py:method:: get_successors_of_node(node_id: str = '', node: Optional[GraphNode] = None) -> list[GraphNode]
+
+      Get all successor nodes of a given node.
+
+      :param node_id: The ID of the node. Defaults to "".
+      :type node_id: str, optional
+      :param node: The node object. Defaults to None.
+      :type node: Optional[GraphNode], optional
+
+      :returns: A list of successor nodes.
+      :rtype: list[GraphNode]
+
+      :raises UserWarning: If neither node_id nor node is provided, or if the node does not exist.
+
+
+
+   .. py:method:: get_in_degree(node_id: str) -> int
+
+      Get the in-degree of a specific node.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+
+      :returns: The number of incoming edges to the node.
+      :rtype: int
+
+      :raises UserWarning: If the node does not exist.
+
+
+
+   .. py:method:: get_out_degree(node_id: str) -> int
+
+      Get the out-degree of a specific node.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+
+      :returns: The number of outgoing edges from the node.
+      :rtype: int
+
+      :raises UserWarning: If the node does not exist.
+
+
+
+   .. py:method:: get_degree(node_id: str) -> int
+
+      Get the total degree (in-degree + out-degree) of a specific node.
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+
+      :returns: The total degree of the node.
+      :rtype: int
+
+      :raises UserWarning: If the node does not exist.
+
+
+
+   .. py:method:: get_edge_weight(src_node_id: str, dst_node_id: str) -> float
+
+      Get the weight of an edge between two nodes.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+
+      :returns: The weight of the edge.
+      :rtype: float
+
+      :raises UserWarning: If the graph is unweighted, if either node does not exist, or if the edge does not exist.
+
+
+
+   .. py:method:: has_edge(src_node_id: str, dst_node_id: str) -> bool
+
+      Check if an edge exists between two nodes.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+
+      :returns: True if the edge exists, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: explore_from_source(src_node_id: str, exploration_algorithm: str = 'bfs', force_sym_edges_to_exists: bool = False, nodes_marks: Optional[dict[str, Any]] = None, custom_node_ordering: Optional[Callable[str, float]] = None, fn_to_mark_nodes: Callable[Ellipsis, Any] = lambda _: 1, fn_to_mark_nodes_args: Optional[list[Any]] = None, fn_to_mark_nodes_kwargs: Optional[dict[str, Any]] = None, fn_on_loop: Callable[Ellipsis, bool] = lambda _: True, fn_on_loop_args: Optional[list[Any]] = None, fn_on_loop_kwargs: Optional[dict[str, Any]] = None) -> dict[str, Any]
+
+      Perform a graph exploration starting from a source node using the specified algorithm.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param exploration_algorithm: The exploration algorithm ('bfs', 'dfs', or 'random'). Defaults to "bfs".
+      :type exploration_algorithm: str, optional
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to False.
+      :type force_sym_edges_to_exists: bool, optional
+      :param nodes_marks: Dictionary to store node marks. Defaults to None.
+      :type nodes_marks: Optional[dict[str, Any]], optional
+      :param custom_node_ordering: Function to order nodes. Defaults to None.
+      :type custom_node_ordering: Optional[Callable[str, float]], optional
+      :param fn_to_mark_nodes: Function to mark nodes. Defaults to lambda _: 1.
+      :type fn_to_mark_nodes: Callable[..., Any], optional
+      :param fn_to_mark_nodes_args: Arguments for fn_to_mark_nodes. Defaults to None.
+      :type fn_to_mark_nodes_args: Optional[list[Any]], optional
+      :param fn_to_mark_nodes_kwargs: Keyword arguments for fn_to_mark_nodes. Defaults to None.
+      :type fn_to_mark_nodes_kwargs: Optional[dict[str, Any]], optional
+      :param fn_on_loop: Function to control the exploration loop. Defaults to lambda _: True.
+      :type fn_on_loop: Callable[..., bool], optional
+      :param fn_on_loop_args: Arguments for fn_on_loop. Defaults to None.
+      :type fn_on_loop_args: Optional[list[Any]], optional
+      :param fn_on_loop_kwargs: Keyword arguments for fn_on_loop. Defaults to None.
+      :type fn_on_loop_kwargs: Optional[dict[str, Any]], optional
+
+      :returns: A dictionary of marked nodes.
+      :rtype: dict[str, Any]
+
+      :raises UserWarning: If the exploration algorithm is invalid.
+
+
+
+   .. py:method:: explore_all_nodes(exploration_algorithm: str = 'bfs', force_sym_edges_to_exists: bool = False, custom_node_ordering: Optional[Callable[str, float]] = None, fn_to_mark_nodes: Callable[Ellipsis, Any] = lambda _: 1, fn_to_mark_nodes_args: Optional[list[Any]] = None, fn_to_mark_nodes_kwargs: Optional[dict[str, Any]] = None, fn_on_loop: Callable[Ellipsis, bool] = lambda _: True, fn_on_loop_args: Optional[list[Any]] = None, fn_on_loop_kwargs: Optional[dict[str, Any]] = None, fn_after_one_exploration: Callable[Ellipsis, None] = lambda _: None, fn_after_one_exploration_args: Optional[list[Any]] = None, fn_after_one_exploration_kwargs: Optional[dict[str, Any]] = None) -> dict[str, Any]
+
+      Explore all nodes in the graph using the specified algorithm.
+
+      :param exploration_algorithm: The exploration algorithm ('bfs', 'dfs', or 'random'). Defaults to "bfs".
+      :type exploration_algorithm: str, optional
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to False.
+      :type force_sym_edges_to_exists: bool, optional
+      :param custom_node_ordering: Function to order nodes. Defaults to None.
+      :type custom_node_ordering: Optional[Callable[str, float]], optional
+      :param fn_to_mark_nodes: Function to mark nodes. Defaults to lambda _: 1.
+      :type fn_to_mark_nodes: Callable[..., Any], optional
+      :param fn_to_mark_nodes_args: Arguments for fn_to_mark_nodes. Defaults to None.
+      :type fn_to_mark_nodes_args: Optional[list[Any]], optional
+      :param fn_to_mark_nodes_kwargs: Keyword arguments for fn_to_mark_nodes. Defaults to None.
+      :type fn_to_mark_nodes_kwargs: Optional[dict[str, Any]], optional
+      :param fn_on_loop: Function to control the exploration loop. Defaults to lambda _: True.
+      :type fn_on_loop: Callable[..., bool], optional
+      :param fn_on_loop_args: Arguments for fn_on_loop. Defaults to None.
+      :type fn_on_loop_args: Optional[list[Any]], optional
+      :param fn_on_loop_kwargs: Keyword arguments for fn_on_loop. Defaults to None.
+      :type fn_on_loop_kwargs: Optional[dict[str, Any]], optional
+      :param fn_after_one_exploration: Function called after each exploration. Defaults to lambda _: None.
+      :type fn_after_one_exploration: Callable[..., None], optional
+      :param fn_after_one_exploration_args: Arguments for fn_after_one_exploration. Defaults to None.
+      :type fn_after_one_exploration_args: Optional[list[Any]], optional
+      :param fn_after_one_exploration_kwargs: Keyword arguments for fn_after_one_exploration. Defaults to None.
+      :type fn_after_one_exploration_kwargs: Optional[dict[str, Any]], optional
+
+      :returns: A dictionary of marked nodes.
+      :rtype: dict[str, Any]
+
+
+
+   .. py:method:: get_all_connex_composants(force_sym_edges_to_exists: bool = False, custom_node_ordering: Optional[Callable[str, float]] = None) -> tuple[dict[str, int], list[list[str]]]
+
+      Get all connected components of the graph.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to False.
+      :type force_sym_edges_to_exists: bool, optional
+      :param custom_node_ordering: Function to order nodes. Defaults to None.
+      :type custom_node_ordering: Optional[Callable[str, float]], optional
+
+      :returns: A tuple containing a dictionary mapping nodes to component IDs and a list of components (each component is a list of node IDs).
+      :rtype: tuple[dict[str, int], list[list[str]]]
+
+
+
+   .. py:method:: copy() -> Graph
+
+      Create a deep copy of the graph.
+
+      :returns: A new Graph instance with copied nodes and edges.
+      :rtype: Graph
+
+
+
+   .. py:method:: has_cycle(force_sym_edges_to_exists: bool = False) -> bool
+
+      Check if the graph contains a cycle.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to False.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: True if a cycle exists, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: get_spanning_tree() -> Graph
+
+      Compute a spanning tree or minimum spanning tree of the graph.
+
+      :returns: A new Graph instance representing the spanning tree (Kruskal's algorithm for weighted graphs, BFS for unweighted).
+      :rtype: Graph
+
+
+
+   .. py:method:: is_dag() -> bool
+
+      Check if the graph is a Directed Acyclic Graph (DAG).
+
+      :returns: True if the graph is a DAG, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: dijkstra(src_node_id: str) -> tuple[dict[str, float], dict[str, Optional[str]]]
+
+      Compute shortest paths from a source node using Dijkstra's algorithm.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+
+      :returns: A tuple of dictionaries containing distances and predecessors.
+      :rtype: tuple[dict[str, float], dict[str, Optional[str]]]
+
+      :raises UserWarning: If the source node does not exist or if negative weights are detected.
+
+
+
+   .. py:method:: a_star(src_node_id: str, dst_node_id: str, heuristic: Callable[[str, str], float]) -> tuple[list[str], float]
+
+      Compute the shortest path between two nodes using the A* algorithm.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+      :param heuristic: Heuristic function estimating the cost to the destination.
+      :type heuristic: Callable[[str, str], float]
+
+      :returns: A tuple containing the shortest path and its total cost.
+      :rtype: tuple[list[str], float]
+
+      :raises UserWarning: If either node does not exist, if negative weights are detected, or if no path exists.
+
+
+
+   .. py:method:: get_adjacency_matrix() -> tuple[numpy.ndarray, dict[str, int]]
+
+      Get the adjacency matrix representation of the graph.
+
+      :returns: A tuple containing the adjacency matrix and a node-to-index mapping.
+      :rtype: tuple[np.ndarray, dict[str, int]]
+
+
+
+   .. py:method:: get_adjacency_list() -> dict[str, list[tuple[str, Optional[float]]]]
+
+      Get the adjacency list representation of the graph.
+
+      :returns: A dictionary mapping each node to a list of (neighbor_id, weight) tuples.
+      :rtype: dict[str, list[tuple[str, Optional[float]]]]
+
+
+
+   .. py:method:: from_adjacency_matrix(matrix: numpy.ndarray, node_ids: Optional[list[str]] = None, weighted: bool = True) -> Graph
+      :staticmethod:
+
+
+      Create a graph from an adjacency matrix.
+
+      :param matrix: The adjacency matrix.
+      :type matrix: np.ndarray
+      :param node_ids: List of node IDs. Defaults to None (generates IDs 0 to n-1).
+      :type node_ids: Optional[list[str]], optional
+      :param weighted: If True, the graph is weighted. Defaults to True.
+      :type weighted: bool, optional
+
+      :returns: A new Graph instance constructed from the matrix.
+      :rtype: Graph
+
+      :raises UserWarning: If the matrix is not square, contains negative values, or if node IDs are invalid.
+
+
+
+   .. py:method:: get_edge_list() -> list[tuple[str, str, Optional[float]]]
+
+      Get a list of all edges in the graph.
+
+      :returns: A list of tuples containing source node ID, destination node ID, and weight (if weighted).
+      :rtype: list[tuple[str, str, Optional[float]]]
+
+
+
+   .. py:method:: is_connected(force_sym_edges_to_exists: bool = True) -> bool
+
+      Check if the graph is fully connected.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: True if the graph is connected, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: get_shortest_path(src_node_id: str, dst_node_id: str) -> list[str]
+
+      Get the shortest path between two nodes using Dijkstra's algorithm.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+
+      :returns: The list of node IDs in the shortest path.
+      :rtype: list[str]
+
+      :raises UserWarning: If either node does not exist or if no path exists.
+
+
+
+   .. py:method:: topological_sort() -> list[str]
+
+      Compute a topological sort of the graph.
+
+      :returns: A list of node IDs in topological order.
+      :rtype: list[str]
+
+      :raises UserWarning: If the graph contains a cycle.
+
+
+
+   .. py:method:: get_transitive_closure() -> tuple[numpy.ndarray, dict[str, int]]
+
+      Compute the transitive closure of the graph using the Floyd-Warshall algorithm.
+
+      :returns: A tuple containing the reachability matrix and a node-to-index mapping.
+      :rtype: tuple[np.ndarray, dict[str, int]]
+
+
+
+   .. py:method:: get_diameter(force_sym_edges_to_exists: bool = True) -> float
+
+      Compute the diameter of the graph (longest shortest path).
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: The diameter of the graph.
+      :rtype: float
+
+      :raises UserWarning: If the graph is not connected.
+
+
+
+   .. py:method:: reverse_graph() -> Graph
+
+      Create a new graph with all edge directions reversed.
+
+      :returns: A new Graph instance with reversed edges.
+      :rtype: Graph
+
+
+
+   .. py:method:: get_strongly_connected_components() -> tuple[dict[str, int], list[list[str]]]
+
+      Compute strongly connected components using Kosaraju's algorithm.
+
+      :returns: A tuple containing a dictionary mapping nodes to component IDs and a list of components.
+      :rtype: tuple[dict[str, int], list[list[str]]]
+
+
+
+   .. py:method:: get_clustering_coefficient(node_id: Optional[str] = None, force_sym_edges_to_exists: bool = True) -> float
+
+      Compute the clustering coefficient for a node or the average for the graph.
+
+      :param node_id: The ID of the node. If None, computes the average for all nodes. Defaults to None.
+      :type node_id: Optional[str], optional
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: The clustering coefficient.
+      :rtype: float
+
+      :raises UserWarning: If the specified node does not exist.
+
+
+
+   .. py:method:: get_shortest_path_astar(src_node_id: str, dst_node_id: str, heuristic: Callable[[str, str], float]) -> list[str]
+
+      Get the shortest path between two nodes using the A* algorithm.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+      :param heuristic: Heuristic function estimating the cost to the destination.
+      :type heuristic: Callable[[str, str], float]
+
+      :returns: The list of node IDs in the shortest path.
+      :rtype: list[str]
+
+      :raises UserWarning: If either node does not exist or if no path exists.
+
+
+
+   .. py:method:: get_all_pairs_shortest_paths(force_sym_edges_to_exists: bool = True) -> tuple[numpy.ndarray, dict[str, int]]
+
+      Compute shortest paths between all pairs of nodes.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A tuple containing the distance matrix and a node-to-index mapping.
+      :rtype: tuple[np.ndarray, dict[str, int]]
+
+      :raises UserWarning: If negative weights are detected in a weighted graph.
+
+
+
+   .. py:method:: get_eccentricity(node_id: str, force_sym_edges_to_exists: bool = True) -> float
+
+      Compute the eccentricity of a node (maximum shortest path distance).
+
+      :param node_id: The ID of the node.
+      :type node_id: str
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: The eccentricity of the node.
+      :rtype: float
+
+      :raises UserWarning: If the node does not exist.
+
+
+
+   .. py:method:: get_center(force_sym_edges_to_exists: bool = True) -> list[str]
+
+      Find the center of the graph (nodes with minimum eccentricity).
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A list of node IDs in the center.
+      :rtype: list[str]
+
+      :raises UserWarning: If the graph is not connected.
+
+
+
+   .. py:method:: get_bipartite_partition(force_sym_edges_to_exists: bool = True) -> dict[str, int]
+
+      Check if the graph is bipartite and return its bipartition.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A dictionary mapping nodes to their partition (0 or 1).
+      :rtype: dict[str, int]
+
+      :raises UserWarning: If the graph is not bipartite.
+
+
+
+   .. py:method:: get_maximum_flow(src_node_id: str, sink_node_id: str) -> tuple[float, Graph]
+
+      Compute the maximum flow between a source and sink node using the Edmonds-Karp algorithm.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param sink_node_id: The ID of the sink node.
+      :type sink_node_id: str
+
+      :returns: A tuple containing the maximum flow value and the residual graph.
+      :rtype: tuple[float, Graph]
+
+      :raises UserWarning: If the graph is unweighted, if either node does not exist, or if source and sink are the same.
+
+
+
+   .. py:method:: get_minimum_cut(src_node_id: str, sink_node_id: str) -> tuple[list[tuple[str, str, float]], float]
+
+      Compute the minimum cut between a source and sink node.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param sink_node_id: The ID of the sink node.
+      :type sink_node_id: str
+
+      :returns: A tuple containing the list of cut edges and the cut value.
+      :rtype: tuple[list[tuple[str, str, float]], float]
+
+      :raises UserWarning: If the graph is unweighted, if either node does not exist, or if source and sink are the same.
+
+
+
+   .. py:method:: is_tree(force_sym_edges_to_exists: bool = True) -> bool
+
+      Check if the graph is a tree.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: True if the graph is a tree, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: get_bridges(force_sym_edges_to_exists: bool = True) -> list[tuple[str, str]]
+
+      Find all bridges in the graph.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A list of tuples representing bridge edges.
+      :rtype: list[tuple[str, str]]
+
+      :raises UserWarning: If the graph is directed (force_sym_edges_to_exists is False).
+
+
+
+   .. py:method:: get_articulation_points(force_sym_edges_to_exists: bool = True) -> list[str]
+
+      Find all articulation points in the graph.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A list of node IDs that are articulation points.
+      :rtype: list[str]
+
+      :raises UserWarning: If the graph is directed (force_sym_edges_to_exists is False).
+
+
+
+   .. py:method:: get_node_count() -> int
+
+      Get the number of nodes in the graph.
+
+      :returns: The number of nodes.
+      :rtype: int
+
+
+
+   .. py:method:: get_edge_count() -> int
+
+      Get the number of edges in the graph.
+
+      :returns: The number of edges.
+      :rtype: int
+
+
+
+   .. py:method:: is_empty() -> bool
+
+      Check if the graph is empty.
+
+      :returns: True if the graph has no nodes, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: has_path(src_node_id: str, dst_node_id: str, force_sym_edges_to_exists: bool = False) -> bool
+
+      Check if a path exists between two nodes.
+
+      :param src_node_id: The ID of the source node.
+      :type src_node_id: str
+      :param dst_node_id: The ID of the destination node.
+      :type dst_node_id: str
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to False.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: True if a path exists, False otherwise.
+      :rtype: bool
+
+      :raises UserWarning: If either node does not exist.
+
+
+
+   .. py:method:: get_all_pairs_shortest_paths_with_paths(force_sym_edges_to_exists: bool = True) -> tuple[numpy.ndarray, dict[str, int], dict[str, dict[str, Optional[str]]]]
+
+      Compute all-pairs shortest paths with predecessor information.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A tuple containing the distance matrix, node-to-index mapping, and predecessors.
+      :rtype: tuple[np.ndarray, dict[str, int], dict[str, dict[str, Optional[str]]]]
+
+      :raises UserWarning: If negative weights are detected in a weighted graph.
+
+
+
+   .. py:method:: get_eulerian_path(force_sym_edges_to_exists: bool = True) -> list[str]
+
+      Find an Eulerian path or circuit in the graph.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A list of node IDs forming an Eulerian path or circuit.
+      :rtype: list[str]
+
+      :raises UserWarning: If the graph does not satisfy Eulerian path conditions or is not connected.
+
+
+
+   .. py:method:: get_hamiltonian_path(force_sym_edges_to_exists: bool = True, find_cycle: bool = False) -> list[str]
+
+      Find a Hamiltonian path or cycle in the graph.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+      :param find_cycle: If True, find a Hamiltonian cycle instead of a path. Defaults to False.
+      :type find_cycle: bool, optional
+
+      :returns: A list of node IDs forming a Hamiltonian path or cycle.
+      :rtype: list[str]
+
+      :raises UserWarning: If no Hamiltonian path or cycle exists.
+
+
+
+   .. py:method:: get_betweenness_centrality(force_sym_edges_to_exists: bool = True) -> dict[str, float]
+
+      Compute the betweenness centrality for each node.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A dictionary mapping node IDs to their betweenness centrality scores.
+      :rtype: dict[str, float]
+
+
+
+   .. py:method:: get_closeness_centrality(force_sym_edges_to_exists: bool = True) -> dict[str, float]
+
+      Compute the closeness centrality for each node.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A dictionary mapping node IDs to their closeness centrality scores.
+      :rtype: dict[str, float]
+
+
+
+   .. py:method:: get_degree_centrality(force_sym_edges_to_exists: bool = True) -> dict[str, float]
+
+      Compute the degree centrality for each node.
+
+      :param force_sym_edges_to_exists: Treat the graph as undirected. Defaults to True.
+      :type force_sym_edges_to_exists: bool, optional
+
+      :returns: A dictionary mapping node IDs to their degree centrality scores.
+      :rtype: dict[str, float]
+
+
+
+   .. py:method:: get_subgraph(node_ids: list[str]) -> Graph
+
+      Create a subgraph containing only the specified nodes and edges between them.
+
+      :param node_ids: A list of node IDs to include in the subgraph.
+      :type node_ids: list[str]
+
+      :returns: A new Graph instance containing the specified nodes and their connecting edges.
+      :rtype: Graph
+
+      :raises UserWarning: If any node ID in the list does not exist in the graph or if the input list is empty.
+
+
+
