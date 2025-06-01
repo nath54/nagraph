@@ -26,7 +26,7 @@ print(path)  # ['1', '2']
 
 ## Documentation
 
-Full documentation is available at [link]().
+Full documentation is available at [https://nath54.github.io/nagraph/](https://nath54.github.io/nagraph/).
 
 ## License
 
